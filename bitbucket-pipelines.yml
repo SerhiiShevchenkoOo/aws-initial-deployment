@@ -10,7 +10,7 @@ definitions:
     - step: &build-test-sonarcloud
         name: Build, test and analyze on SonarCloud
         caches:
-          - node:16           # See https://confluence.atlassian.com/bitbucket/caching-dependencies-895552876.html
+          - node           # See https://confluence.atlassian.com/bitbucket/caching-dependencies-895552876.html
           - sonar
         script:
           - npm install          # Build your project and run
