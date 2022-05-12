@@ -39,7 +39,7 @@ definitions:
           - npm install
           - npm test
           - pipe: sonarsource/sonarcloud-scan:1.4.0
-          - pipe: sonarsource/sonarcloud-quality-gate:0.1.6  
+        # - pipe: sonarsource/sonarcloud-quality-gate:0.1.6  
 
 pipelines:                 # More info here: https://confluence.atlassian.com/bitbucket/configure-bitbucket-pipelines-yml-792298910.html
   branches:
