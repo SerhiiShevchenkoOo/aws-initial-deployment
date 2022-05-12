@@ -1,14 +1,21 @@
 image: node:16 # Choose an image matching your project needs
-
+options:
+  docker: true
+  size: 2x
 clone:
   depth: full              # SonarCloud scanner needs the full history to assign issues properly
 
 definitions:
+  services:
+    docker:
+      memory: 6000
   caches:
     sonar: ~/.sonar/cache  # Caching SonarCloud artifacts will speed up your build
   steps:
     - step: &build-test-sonarcloud
         name: Build, test and analyze on SonarCloud
+        services:
+          - docker
         caches:
           - node           # See https://confluence.atlassian.com/bitbucket/caching-dependencies-895552876.html
           - sonar
