@@ -1,45 +1,30 @@
-name: Build and Deploy React App to CloudFront
+name: Build and Deploy Site to S3
 on:
   push:
     branches: [ main ]
-jobs:
-  build-and-deploy:
-    name: Build and Deploy
-    runs-on: ubuntu-latest
-    env:
-      BUCKET: aws-test-bucket-first
-      DIST: build
-      REGION: eu-west-2
-      DIST_ID: 1
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: actions/checkout@master
+    - name: Setup Node
+      uses: actions/setup-node@v2
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.REGION }}
-
-    # - uses: actions/setup-node@v2
-    #   with:
-    #     node-version: '14'
-
-    - name: Install Dependencies
+        node-version: '16.x'
+    - name: Build App
       run: |
-        node --version
-        npm ci --production
-    - name: Build Static Website
-      run: npm run build
-
-    - name: Copy files to the production website with the AWS CLI
-      run: |
-        aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
-
-    - name: Copy files to the production website with the AWS CLI
-      run: |
-        aws cloudfront create-invalidation \
-          --distribution-id ${{ env.DIST_ID }} \
-          --paths "/*"
+       npm i && npm build && ls *
+      env:
+        CI: "" 
+    - name: Copy to S3
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        SOURCE_DIR: ${{ secrets.SOURCE_DIR }}
