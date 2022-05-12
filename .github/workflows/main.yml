@@ -15,7 +15,7 @@ jobs:
         node-version: '16.x'
     - name: Build App
       run: |
-       npm i && npm build && ls *
+       npm run i && npm run build && ls *
       env:
         CI: "" 
     - name: Copy to S3
