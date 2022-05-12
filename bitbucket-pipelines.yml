@@ -25,6 +25,7 @@ definitions:
     - step: &check-quality-gate-sonarcloud
         name: Check the Quality Gate on SonarCloud
         script:
+        - npm install 
         - npm test
         - pipe: sonarsource/sonarcloud-scan:1.4.0
         - pipe: sonarsource/sonarcloud-quality-gate:0.1.6
