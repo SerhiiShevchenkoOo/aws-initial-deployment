@@ -30,14 +30,20 @@ definitions:
         - npm test
         - pipe: sonarsource/sonarcloud-scan:1.4.0
         - pipe: sonarsource/sonarcloud-quality-gate:0.1.6
-          
+    - step: &scan
+        name: Test, and analyze code
+        caches:
+          - node
+          - sonar
+        script:
+          - npm install
+          - npm test
+          - pipe: docker://sonarsource/sonarcloud-scan:latest     
 
 pipelines:                 # More info here: https://confluence.atlassian.com/bitbucket/configure-bitbucket-pipelines-yml-792298910.html
   branches:
     master:
-      - step: *build-test-sonarcloud
-      - step: *check-quality-gate-sonarcloud
+      - step: *scan
   pull-requests:
     '**':
-      - step: *build-test-sonarcloud
-      - step: *check-quality-gate-sonarcloud
+      - step: *scan
